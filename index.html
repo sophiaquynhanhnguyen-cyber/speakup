@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speak Up: luyện nghe nói tiếng Anh</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Speak Up <span>luyện nghe nói mỗi ngày, ~40 phút</span></h1>
+  <nav id="nav">
+    <button data-tab="today" class="active">Hôm nay</button>
+    <button data-tab="dictation">Nghe chép</button>
+    <button data-tab="shadow">Shadowing</button>
+    <button data-tab="ai">Hội thoại AI</button>
+    <button data-tab="reflex">Phản xạ nói</button>
+    <button data-tab="free">Nói tự do</button>
+    <button data-tab="phrases">Cụm từ</button>
+    <button data-tab="stories">Câu chuyện</button>
+    <button data-tab="progress">Tiến độ</button>
+  </nav>
+</header>
+
+<main>
+  <div id="support-notice" class="notice" hidden>
+    Trình duyệt này không hỗ trợ nhận diện giọng nói. Hãy mở app bằng <b>Chrome</b> hoặc <b>Edge</b> để dùng các phần luyện nói.
+  </div>
+
+  <!-- ============ HÔM NAY ============ -->
+  <section class="tab active" id="tab-today">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <h2 id="today-date"></h2>
+          <p class="hint" id="today-week"></p>
+        </div>
+        <div class="stat-row" style="min-width:300px">
+          <div class="stat"><div class="label">Chuỗi ngày</div><div class="value" id="streak">0</div><div class="sub">ngày liên tiếp</div></div>
+          <div class="stat"><div class="label">Tháng này</div><div class="value" id="month-hours">0</div><div class="sub">giờ luyện (mục tiêu ~20)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Việc hằng ngày</h2>
+        <p class="hint">Làm bài trong app sẽ tự đánh dấu. Bạn cũng có thể tick tay.</p>
+        <ul class="checklist" id="daily-list"></ul>
+      </div>
+      <div class="card">
+        <h2>Việc trong tuần</h2>
+        <p class="hint">Giao tiếp thật quyết định tốc độ tiến bộ sau tuần 6–8.</p>
+        <ul class="checklist" id="weekly-list"></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Lộ trình 6 tháng</h2>
+      <div id="milestones"></div>
+    </div>
+
+    <div class="card">
+      <h2>Cài đặt</h2>
+      <div class="row">
+        <div style="flex:1;min-width:200px">
+          <label class="small">Ngày bắt đầu lộ trình</label>
+          <input type="date" id="start-date">
+        </div>
+        <div style="flex:1;min-width:200px">
+          <label class="small">Giọng đọc mẫu</label>
+          <select id="voice-select"></select>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <label class="small">Sao lưu dữ liệu</label>
+          <div class="row">
+            <button class="btn secondary" id="export-btn">Xuất file</button>
+            <button class="btn secondary" id="import-btn">Nhập file</button>
+            <input type="file" id="import-file" accept=".json" hidden>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NGHE CHÉP ============ -->
+  <section class="tab" id="tab-dictation">
+    <div class="card">
+      <h2>Nghe chép chính tả (15 phút)</h2>
+      <p class="hint">Chọn clip 1–2 phút có người nói tự nhiên: podcast trò chuyện, phỏng vấn đường phố, tranh luận ở Nghị viện châu Âu. Dán link YouTube và transcript, nghe rồi chép lại từng câu. App sẽ chấm độ chính xác.</p>
+      <div class="grid2">
+        <div>
+          <label class="small">Link YouTube (không bắt buộc)</label>
+          <input type="text" id="dict-url" placeholder="https://www.youtube.com/watch?v=...">
+          <div id="dict-video" style="margin-top:10px"></div>
+          <label class="small" style="margin-top:10px">Transcript gốc (đoạn bạn sẽ chép)</label>
+          <textarea id="dict-ref" placeholder="Dán transcript của đoạn 1–2 phút vào đây..."></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="btn secondary" id="dict-hide">Ẩn transcript</button>
+            <span class="hint" style="margin:0">Không có clip? Dùng
+              <a href="#" id="dict-tts">bài mẫu đọc bằng máy</a>.</span>
+          </div>
+        </div>
+        <div>
+          <label class="small">Bạn nghe được gì?</label>
+          <textarea id="dict-input" style="min-height:220px" placeholder="Gõ lại những gì bạn nghe được..."></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="btn" id="dict-check">Chấm điểm</button>
+            <span id="dict-score"></span>
+          </div>
+        </div>
+      </div>
+      <div id="dict-result" style="margin-top:14px" hidden>
+        <h3>So sánh với transcript</h3>
+        <p class="hint">Chữ <span class="diff"><span class="miss">gạch chân đỏ</span></span> là chỗ bạn nghe sót hoặc sai. Ghi lại lý do: nối âm, nuốt âm, hay từ lóng?</p>
+        <div class="transcript diff" id="dict-diff"></div>
+        <div class="row" style="margin-top:10px">
+          <select id="dict-reason" style="max-width:240px">
+            <option value="">Lý do sai chủ yếu...</option>
+            <option>Nối âm (linking)</option>
+            <option>Nuốt âm (elision / reduction)</option>
+            <option>Từ lóng / cách nói thân mật</option>
+            <option>Giọng lạ (accent)</option>
+            <option>Từ mới chưa biết</option>
+            <option>Nói quá nhanh</option>
+          </select>
+          <button class="btn" id="dict-save">Lưu kết quả</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Quy tắc nối âm, nuốt âm (connected speech)</h2>
+      <p class="hint">Biết luật thì tai nhận ra nhanh hơn. Bấm 🔊 để nghe cách nói tự nhiên.</p>
+      <div id="connected-rules"></div>
+    </div>
+
+    <div class="card">
+      <h2>Lịch sử nghe chép</h2>
+      <table><thead><tr><th>Ngày</th><th>Clip</th><th>Chính xác</th><th>Lỗi chính</th></tr></thead><tbody id="dict-history"></tbody></table>
+    </div>
+  </section>
+
+  <!-- ============ SHADOWING ============ -->
+  <section class="tab" id="tab-shadow">
+    <div class="card">
+      <h2>Shadowing: nói đuổi theo (10 phút)</h2>
+      <p class="hint">Nghe câu mẫu, rồi nói lặp ngay, bắt chước cả nhịp và ngữ điệu. Tốt nhất là dùng chính clip bạn vừa nghe chép: thêm câu của bạn vào danh sách bên dưới.</p>
+      <div class="grid2">
+        <div>
+          <div class="row" style="margin-bottom:8px">
+            <select id="shadow-set" style="flex:1"></select>
+          </div>
+          <div id="shadow-list" style="max-height:340px;overflow:auto"></div>
+          <div class="row" style="margin-top:10px">
+            <input type="text" id="shadow-new" placeholder="Thêm câu của bạn..." style="flex:1">
+            <button class="btn secondary" id="shadow-add">Thêm</button>
+          </div>
+        </div>
+        <div>
+          <div class="big-q" id="shadow-current">Chọn một câu bên trái</div>
+          <div class="row">
+            <button class="btn secondary" id="shadow-play">🔊 Nghe</button>
+            <button class="btn secondary" id="shadow-slow">🐢 Chậm</button>
+            <button class="btn" id="shadow-rec">🎙 Nói theo</button>
+            <label class="row" style="gap:4px;font-size:.85rem"><input type="checkbox" id="shadow-auto" checked style="width:auto"> Tự ghi âm sau khi nghe</label>
+          </div>
+          <div class="row" style="margin-top:12px"><div class="meter"><div id="shadow-meter"></div></div></div>
+          <h3>Bạn đã nói</h3>
+          <div class="transcript diff" id="shadow-out"></div>
+          <div id="shadow-score" style="margin-top:8px"></div>
+          <div id="shadow-audio"></div>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:12px">Hôm nay đã shadowing: <b id="shadow-count">0</b> câu, <b id="shadow-mins">0</b> phút. Đạt 10 phút sẽ tự đánh dấu hoàn thành.</p>
+    </div>
+  </section>
+
+  <!-- ============ HỘI THOẠI AI ============ -->
+  <section class="tab" id="tab-ai">
+    <div class="card" id="ai-setup">
+      <h2>Hội thoại với AI</h2>
+      <p class="hint">Nói chuyện bằng giọng với Claude như với một người bạn ở club, bạn tandem hay giám khảo IELTS. Không áp lực, nói sai cũng không sao. Cuối buổi bạn nhận được nhận xét bằng tiếng Việt.</p>
+      <div class="row" id="ai-key-row">
+        <div style="flex:1;min-width:260px">
+          <label class="small">Anthropic API key (lấy ở console.anthropic.com, tính phí theo lượt dùng)</label>
+          <input type="password" id="ai-key" placeholder="sk-ant-..." autocomplete="off">
+        </div>
+        <button class="btn secondary" id="ai-key-save" style="align-self:flex-end">Lưu key</button>
+      </div>
+      <p class="hint" id="ai-key-note" style="margin-top:6px">Key chỉ được lưu trong trình duyệt này và gửi thẳng tới Anthropic. Đừng dùng app trên máy người khác.</p>
+      <div class="row" style="margin-top:6px">
+        <div style="flex:1;min-width:200px">
+          <label class="small">Tình huống</label>
+          <select id="ai-scenario"></select>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <label class="small">Sửa lỗi</label>
+          <select id="ai-correct">
+            <option value="end">Chỉ nhận xét cuối buổi (trôi chảy hơn)</option>
+            <option value="light">Gợi ý nhẹ ngay sau câu sai</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <label class="small">Chế độ</label>
+          <label class="row" style="gap:6px"><input type="checkbox" id="ai-handsfree" checked style="width:auto"> Rảnh tay: tự bật micro, tự gửi khi bạn ngừng nói ~2 giây</label>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="ai-begin">▶ Bắt đầu hội thoại</button>
+        <button class="btn danger" id="ai-end" disabled>■ Kết thúc &amp; nhận xét</button>
+        <span id="ai-status" class="hint" style="margin:0"></span>
+      </div>
+    </div>
+    <div class="card">
+      <div id="ai-chat" class="chat"></div>
+      <div class="row" style="margin-top:12px"><div class="meter"><div id="ai-meter"></div></div><span id="ai-live" class="hint" style="margin:0"></span></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="ai-mic" disabled>🎙 Nói</button>
+        <input type="text" id="ai-text" placeholder="...hoặc gõ câu trả lời" style="flex:1" disabled>
+        <button class="btn secondary" id="ai-send" disabled>Gửi</button>
+        <button class="btn secondary" id="ai-hint" disabled title="Gợi ý vài ý để trả lời">💭 Bí ý</button>
+      </div>
+    </div>
+    <div class="card" id="ai-feedback-card" hidden>
+      <h2>Nhận xét buổi nói</h2>
+      <div class="stat-row" id="ai-stats" style="margin-bottom:12px"></div>
+      <div id="ai-feedback" class="feedback"></div>
+    </div>
+  </section>
+
+  <!-- ============ PHẢN XẠ ============ -->
+  <section class="tab" id="tab-reflex">
+    <div class="card">
+      <h2>Luyện phản xạ: trả lời ngay, không soạn trước</h2>
+      <p class="hint">App đọc câu hỏi và đo <b>thời gian từ lúc nghe hỏi đến lúc bạn bắt đầu nói</b>, <b>tốc độ nói</b> và <b>số lần ngừng quá 1 giây</b>. Nói câu ngắn, ưu tiên trôi chảy. Bí thì dùng câu câu giờ.</p>
+      <div class="row" style="margin-bottom:10px">
+        <select id="reflex-cat" style="max-width:240px"></select>
+        <label class="row" style="gap:4px;font-size:.85rem"><input type="checkbox" id="reflex-show" style="width:auto"> Hiện chữ câu hỏi (dễ hơn)</label>
+        <select id="reflex-len" style="max-width:180px">
+          <option value="30">Trả lời 30 giây</option>
+          <option value="45" selected>Trả lời 45 giây</option>
+          <option value="60">Trả lời 60 giây</option>
+        </select>
+      </div>
+      <div class="big-q" id="reflex-q">Bấm “Câu hỏi mới” để bắt đầu</div>
+      <div class="row">
+        <button class="btn" id="reflex-start">▶ Câu hỏi mới</button>
+        <button class="btn secondary" id="reflex-repeat" disabled>🔊 Nghe lại</button>
+        <button class="btn danger" id="reflex-stop" disabled>■ Xong</button>
+        <span id="reflex-status"></span>
+        <span class="timer" id="reflex-timer" style="margin-left:auto">0:00</span>
+      </div>
+      <div class="row" style="margin-top:12px"><div class="meter"><div id="reflex-meter"></div></div></div>
+      <h3>Câu trả lời của bạn</h3>
+      <div class="transcript" id="reflex-out"></div>
+      <div class="stat-row" id="reflex-stats" style="margin-top:12px"></div>
+      <div id="reflex-audio"></div>
+    </div>
+    <div class="card">
+      <h2>Kết quả gần đây</h2>
+      <table><thead><tr><th>Ngày</th><th>Câu hỏi</th><th>Bắt đầu nói</th><th>Từ/phút</th><th>Ngừng/phút</th></tr></thead><tbody id="reflex-history"></tbody></table>
+    </div>
+  </section>
+
+  <!-- ============ NÓI TỰ DO ============ -->
+  <section class="tab" id="tab-free">
+    <div class="card">
+      <h2>Nói tự do</h2>
+      <div class="row" style="margin-bottom:12px">
+        <select id="free-mode" style="max-width:340px">
+          <option value="journal">Nhật ký giọng nói (3–5 phút, không dừng sửa)</option>
+          <option value="lecture">Tóm tắt bài giảng hôm nay (2 phút)</option>
+          <option value="summary">Tóm tắt podcast vừa nghe (1–2 phút)</option>
+          <option value="432">Kỹ thuật 4-3-2 (kể 1 chuyện: 4, 3, rồi 2 phút)</option>
+        </select>
+      </div>
+      <p class="hint" id="free-desc"></p>
+      <div class="row" id="free-topic-row">
+        <div style="flex:1">
+          <label class="small">Chủ đề</label>
+          <input type="text" id="free-topic" placeholder="VD: Một ngày của tôi ở Bỉ">
+        </div>
+        <button class="btn secondary" id="free-random" style="align-self:flex-end">🎲 Ngẫu nhiên</button>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="free-start">🎙 Bắt đầu</button>
+        <button class="btn danger" id="free-stop" disabled>■ Dừng</button>
+        <span id="free-round"></span>
+        <span class="timer" id="free-timer" style="margin-left:auto">0:00</span>
+      </div>
+      <div class="row" style="margin-top:12px"><div class="meter"><div id="free-meter"></div></div></div>
+      <h3>Lời bạn nói</h3>
+      <div class="transcript" id="free-out"></div>
+      <div id="free-results" style="margin-top:12px"></div>
+      <div id="free-audio"></div>
+    </div>
+    <div class="card">
+      <h2>Lịch sử</h2>
+      <table><thead><tr><th>Ngày</th><th>Loại</th><th>Chủ đề</th><th>Thời lượng</th><th>Từ/phút</th><th>Ngừng/phút</th></tr></thead><tbody id="free-history"></tbody></table>
+    </div>
+  </section>
+
+  <!-- ============ CỤM TỪ ============ -->
+  <section class="tab" id="tab-phrases">
+    <div class="card">
+      <h2>Thẻ phản xạ</h2>
+      <p class="hint">App đưa ra tình huống bằng tiếng Việt, bạn nói ngay một câu tiếng Anh phù hợp. Không cần đúng y câu mẫu.</p>
+      <div class="big-q" id="flash-q">Bấm “Thẻ mới”</div>
+      <div class="row">
+        <button class="btn" id="flash-next">Thẻ mới</button>
+        <button class="btn secondary" id="flash-rec">🎙 Nói</button>
+        <button class="btn secondary" id="flash-show">Xem gợi ý</button>
+      </div>
+      <div class="transcript" id="flash-out" style="margin-top:10px"></div>
+      <div id="flash-ans" style="margin-top:8px"></div>
+    </div>
+    <div id="phrase-groups"></div>
+  </section>
+
+  <!-- ============ CÂU CHUYỆN ============ -->
+  <section class="tab" id="tab-stories">
+    <div class="card">
+      <h2>5–6 câu chuyện về bản thân</h2>
+      <p class="hint">Chuẩn bị sẵn để không bị bí khi trò chuyện ở club hay với bạn tandem. Chỉ ghi <b>từ khoá</b>, đừng viết cả bài để học thuộc. Rồi kể to theo kỹ thuật 4-3-2.</p>
+      <div id="story-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ TIẾN ĐỘ ============ -->
+  <section class="tab" id="tab-progress">
+    <div class="card">
+      <h2>5 chỉ số tiến bộ</h2>
+      <p class="hint">Số tự động lấy trung bình 14 ngày gần nhất từ các bài luyện. Hãy đo định kỳ mỗi 2 tuần, vì cảm giác của bản thân thường đánh giá thấp tiến bộ thật.</p>
+      <div id="measure-reminder"></div>
+      <div class="stat-row" id="metric-cards"></div>
+    </div>
+    <div class="card">
+      <h2>Ghi lần đo định kỳ</h2>
+      <p class="hint">Cách đo chuẩn: ghi âm 2 phút với chủ đề ngẫu nhiên (dùng “Phản xạ nói” với độ dài 60 giây × 2), nghe chép 1 clip mới, và nghe 1 đoạn 10 phút rồi tóm tắt xem nhớ được mấy ý.</p>
+      <div class="row">
+        <div style="flex:1;min-width:120px"><label class="small">Ngày</label><input type="date" id="m-date"></div>
+        <div style="flex:1;min-width:120px"><label class="small">Tốc độ nói (từ/phút)</label><input type="number" id="m-wpm"></div>
+        <div style="flex:1;min-width:120px"><label class="small">Ngừng &gt;1s / phút</label><input type="number" step="0.1" id="m-pauses"></div>
+        <div style="flex:1;min-width:120px"><label class="small">Bắt đầu nói (giây)</label><input type="number" step="0.1" id="m-latency"></div>
+        <div style="flex:1;min-width:120px"><label class="small">Nghe chép (%)</label><input type="number" id="m-dict"></div>
+        <div style="flex:1;min-width:120px"><label class="small">Nhớ ý chính (/6)</label><input type="number" min="0" max="6" id="m-recall"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn secondary" id="m-fill">Điền từ số liệu tự động</button>
+        <button class="btn" id="m-save">Lưu lần đo</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Biểu đồ</h2>
+      <p class="hint">Đường nét đứt là mục tiêu sau 3 tháng.</p>
+      <div id="charts"></div>
+    </div>
+    <div class="card">
+      <h2>Các lần đo</h2>
+      <table><thead><tr><th>Ngày</th><th>Từ/phút</th><th>Ngừng/phút</th><th>Bắt đầu nói</th><th>Nghe chép</th><th>Nhớ ý</th><th></th></tr></thead><tbody id="m-history"></tbody></table>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script type="module" src="ai.js"></script>
+</body>
+</html>
