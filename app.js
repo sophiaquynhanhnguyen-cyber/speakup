@@ -639,10 +639,32 @@ $('phrase-groups').innerHTML = DATA.phrases.map(g => `<div class="card"><h2>${es
   ${g.items.map(([en, vi]) => `<div class="phrase"><button class="icon" data-say="${esc(en)}">🔊</button><span>${esc(en)}</span><span class="vi">${esc(vi)}</span></div>`).join('')}</div>`).join('');
 // Thẻ phản xạ: câu hỏi tiếng Anh về chủ đề ngẫu nhiên
 let flash = null, flashSession = null, flashTimer = null;
-const flashPool = Object.entries(DATA.flashTopics).flatMap(([topic, t]) => t.questions.map(q => ({ topic, q })));
+const flashFixed = Object.entries(DATA.flashTopics).flatMap(([topic, t]) => t.questions.map(q => ({ topic, q })));
+const flashRecent = [];
+// Sinh một câu hỏi ngẫu nhiên từ mẫu câu (vài nghìn tổ hợp)
+function makeQuestion() {
+  const G = DATA.flashGen, r = Math.random();
+  if (r < 0.35) {
+    const [ing, base, past, topic] = pick(G.activities);
+    return { topic, q: pick(G.actTemplates).replace('{ing}', ing).replace('{base}', base).replace('{past}', past) };
+  }
+  if (r < 0.7) {
+    const [n, topic] = pick(G.things);
+    const q = pick(G.thingTemplates).replace('{n}', n);
+    return { topic, q: q[0].toUpperCase() + q.slice(1) };
+  }
+  if (r < 0.85) {
+    const a = pick(G.rather); let b; do { b = pick(G.rather); } while (b === a);
+    return { topic: 'Hypothetical', q: `Would you rather ${a} or ${b}? Why?` };
+  }
+  return pick(flashFixed);
+}
 $('flash-next').onclick = async () => {
   if (flashSession) await stopFlash();
-  let f; do { f = pick(flashPool); } while (flash && f.q === flash.q);
+  // Không lặp lại trong 100 câu gần nhất
+  let f, tries = 0;
+  do { f = makeQuestion(); } while (flashRecent.includes(f.q) && ++tries < 50);
+  flashRecent.push(f.q); if (flashRecent.length > 100) flashRecent.shift();
   flash = f;
   $('flash-topic').innerHTML = `<span class="pill">${esc(f.topic)}</span>`;
   $('flash-q').textContent = f.q; $('flash-out').innerHTML = ''; $('flash-ans').innerHTML = '';
