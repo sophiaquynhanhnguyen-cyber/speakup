@@ -637,28 +637,63 @@ function renderFreeHistory() {
 /* ================= Cụm từ ================= */
 $('phrase-groups').innerHTML = DATA.phrases.map(g => `<div class="card"><h2>${esc(g.group)}</h2>
   ${g.items.map(([en, vi]) => `<div class="phrase"><button class="icon" data-say="${esc(en)}">🔊</button><span>${esc(en)}</span><span class="vi">${esc(vi)}</span></div>`).join('')}</div>`).join('');
-let flash = null, flashSession = null;
-$('flash-next').onclick = () => {
-  let f; do { f = pick(DATA.flashcards); } while (f === flash);
-  flash = f; $('flash-q').textContent = f[0]; $('flash-out').innerHTML = ''; $('flash-ans').innerHTML = '';
+// Thẻ phản xạ: câu hỏi tiếng Anh về chủ đề ngẫu nhiên
+let flash = null, flashSession = null, flashTimer = null;
+const flashPool = Object.entries(DATA.flashTopics).flatMap(([topic, t]) => t.questions.map(q => ({ topic, q })));
+$('flash-next').onclick = async () => {
+  if (flashSession) await stopFlash();
+  let f; do { f = pick(flashPool); } while (flash && f.q === flash.q);
+  flash = f;
+  $('flash-topic').innerHTML = `<span class="pill">${esc(f.topic)}</span>`;
+  $('flash-q').textContent = f.q; $('flash-out').innerHTML = ''; $('flash-ans').innerHTML = '';
+  askFlash();
 };
+async function askFlash() {
+  if (!flash) return;
+  if ($('flash-auto').checked && !flashSession) {
+    // Mở micro trước, đọc câu hỏi, rồi mới bắt đầu tính thời gian phản xạ
+    const s = new SpeechSession({ out: $('flash-out'), autoMark: false });
+    try { await s.open(); } catch { return toast('Không mở được micro'); }
+    flashSession = s;
+    await speak(flash.q, 1);
+    if (flashSession !== s) return;
+    s.markStart();
+    $('flash-rec').innerHTML = '<span class="rec-dot"></span>Dừng';
+    flashTimer = setTimeout(() => flashSession === s && stopFlash(), 45000);
+  } else {
+    await speak(flash.q, 1);
+  }
+}
+$('flash-repeat').onclick = () => flash && speak(flash.q, 0.9);
 $('flash-show').onclick = () => {
   if (!flash) return;
-  $('flash-ans').innerHTML = `Gợi ý: <b>${esc(flash[1])}</b> <button class="icon" data-say="${esc(flash[1])}">🔊</button>`;
+  const vocab = DATA.flashTopics[flash.topic].vocab;
+  $('flash-ans').innerHTML = `<b>Từ vựng gợi ý:</b> ${vocab.map(v => `<span class="pill" style="margin:2px">${esc(v)}</span>`).join(' ')}
+    <br><b>Câu mở đầu:</b> ${DATA.flashStarters.map(v => `<i>${esc(v)}</i> <button class="icon" data-say="${esc(v)}">🔊</button>`).join(' ')}`;
 };
-$('flash-rec').onclick = async () => {
-  if (!flash) return toast('Bấm “Thẻ mới” trước');
-  if (flashSession) {
-    const s = flashSession; flashSession = null; $('flash-rec').textContent = '🎙 Nói';
-    const r = await s.stop();
-    $('flash-out').innerHTML = (esc(r.text) || '<span class="hint">(không nghe thấy)</span>')
-      + (r.latency != null ? ` <span class="pill ${r.latency > 2 ? 'warn' : ''}">bắt đầu sau ${r.latency.toFixed(1)} s</span>` : '');
-    $('flash-show').click();
-    return;
+async function stopFlash() {
+  const s = flashSession; if (!s) return;
+  flashSession = null; clearTimeout(flashTimer);
+  $('flash-rec').textContent = '🎙 Nói';
+  const r = await s.stop();
+  const pills = [];
+  if (r.latency != null) pills.push(`<span class="pill ${r.latency > 2 ? 'warn' : ''}">bắt đầu sau ${r.latency.toFixed(1)} s</span>`);
+  if (r.wpm) pills.push(`<span class="pill ${r.wpm < 120 ? 'warn' : ''}">${Math.round(r.wpm)} từ/phút</span>`);
+  if (r.pausesPerMin != null) pills.push(`<span class="pill ${r.pausesPerMin > 3 ? 'warn' : ''}">${r.pausesPerMin.toFixed(1)} ngừng/phút</span>`);
+  $('flash-out').innerHTML = (esc(r.text) || '<span class="hint">(không nghe thấy)</span>') + ' ' + pills.join(' ');
+  if (r.speakSec >= 3) {
+    today().minutes += r.totalSec / 60; save(); renderToday();
   }
-  flashSession = new SpeechSession({ out: $('flash-out') });
-  try { await flashSession.open(); } catch { flashSession = null; return toast('Không mở được micro'); }
+}
+$('flash-rec').onclick = async () => {
+  if (!flash) return toast('Bấm “Câu hỏi mới” trước');
+  if (flashSession) return stopFlash();
+  speechSynthesis.cancel();
+  const s = new SpeechSession({ out: $('flash-out') });
+  try { await s.open(); } catch { return toast('Không mở được micro'); }
+  flashSession = s;
   $('flash-rec').innerHTML = '<span class="rec-dot"></span>Dừng';
+  flashTimer = setTimeout(() => flashSession === s && stopFlash(), 45000);
 };
 
 /* ================= Câu chuyện ================= */

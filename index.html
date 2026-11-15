@@ -251,12 +251,15 @@
   <section class="tab" id="tab-phrases">
     <div class="card">
       <h2>Thẻ phản xạ</h2>
-      <p class="hint">App đưa ra tình huống bằng tiếng Việt, bạn nói ngay một câu tiếng Anh phù hợp. Không cần đúng y câu mẫu.</p>
-      <div class="big-q" id="flash-q">Bấm “Thẻ mới”</div>
+      <p class="hint">App đọc một câu hỏi tiếng Anh về chủ đề ngẫu nhiên, bạn trả lời ngay trong 2–3 câu. Đừng soạn trước, cứ nói rồi sửa sau. Bí thì bấm “Xem gợi ý”.</p>
+      <div id="flash-topic"></div>
+      <div class="big-q" id="flash-q">Bấm “Câu hỏi mới”</div>
       <div class="row">
-        <button class="btn" id="flash-next">Thẻ mới</button>
+        <button class="btn" id="flash-next">Câu hỏi mới</button>
+        <button class="btn secondary" id="flash-repeat">🔊 Nghe lại</button>
         <button class="btn secondary" id="flash-rec">🎙 Nói</button>
         <button class="btn secondary" id="flash-show">Xem gợi ý</button>
+        <label class="row" style="gap:4px;font-size:.85rem"><input type="checkbox" id="flash-auto" checked style="width:auto"> Tự ghi âm sau khi nghe</label>
       </div>
       <div class="transcript" id="flash-out" style="margin-top:10px"></div>
       <div id="flash-ans" style="margin-top:8px"></div>

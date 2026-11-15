@@ -163,22 +163,45 @@ const DATA = {
       ['So what do you do?', 'Bạn làm gì?'],
     ]},
   ],
-  flashcards: [
-    ['Bạn bị hỏi một câu khó, cần vài giây để nghĩ.', "That's a good question, let me think..."],
-    ['Bạn quên từ "cái mở nắp chai".', "It's the thing you use to open bottles."],
-    ['Bạn không nghe rõ người kia vừa nói gì.', "Sorry, I didn't catch that. Could you say it again?"],
-    ['Muốn hỏi thêm sau khi bạn kể đã đi Tây Ban Nha.', 'Oh nice! What was that like?'],
-    ['Bắt chuyện với người lạ ở club.', "Hi, I don't think we've met. I'm ..."],
-    ['Muốn nói lại ý vừa rồi cho rõ hơn.', 'Let me put it another way...'],
-    ['Đồng ý một phần nhưng có ý khác.', "I see what you mean, but I'd look at it a bit differently."],
-    ['Muốn xen vào thảo luận nhóm trên lớp.', 'Could I just add something here?'],
-    ['Kiểm tra mình hiểu đúng ý người khác.', 'Just to make sure I understood, you mean...?'],
-    ['Từ chối lời mời một cách lịch sự.', "I'd love to, but I can't make it this time."],
-    ['Rủ bạn cùng lớp đi uống cà phê.', 'Do you want to grab a coffee after class?'],
-    ['Kết thúc cuộc trò chuyện tự nhiên.', 'It was really nice talking to you. See you next week!'],
-    ['Bạn quên từ "mất ngủ" (insomnia).', "It's when you can't sleep at night."],
-    ['Người kia kể vừa chuyển nhà.', 'Oh really? How do you like the new place?'],
-  ],
+  flashTopics: {
+    'Food & cooking': { vocab: ['comfort food', 'a sweet tooth', 'home-cooked', 'grab a bite', 'spicy / bland'], questions: [
+      'What did you have for breakfast today?', 'What is a dish you could eat every day?', 'Do you prefer cooking at home or eating out?',
+      'What food would you never try?', 'If you opened a restaurant, what would you serve?'] },
+    'Travel': { vocab: ['off the beaten track', 'a getaway', 'jet lag', 'sightseeing', 'travel light'], questions: [
+      'Where would you go if you could travel anywhere tomorrow?', 'Do you prefer beach holidays or city trips?', 'What is the worst trip you have ever had?',
+      'Would you rather travel alone or with friends?', 'What is one place everyone should visit once?'] },
+    'Technology': { vocab: ['addicted to my phone', 'screen time', 'user-friendly', 'keep up with', 'go offline'], questions: [
+      'How much time do you spend on your phone every day?', 'Which app could you not live without?', 'Could you live without the internet for a week?',
+      'What invention do you think changed the world the most?', 'Do you think robots will do most jobs in the future?'] },
+    'Weather & seasons': { vocab: ['chilly', 'pouring with rain', 'a heatwave', 'gloomy', 'cosy'], questions: [
+      'What is your favourite season and why?', 'How does the weather affect your mood?', 'What do you like to do on a rainy day?',
+      'Would you rather live somewhere always hot or always cold?', 'What was the weather like where you grew up?'] },
+    'Hobbies & free time': { vocab: ['unwind', 'take up a hobby', 'be into something', 'kill time', 'binge-watch'], questions: [
+      'What do you usually do to relax?', 'Is there a hobby you would like to take up?', 'What did you do last weekend?',
+      'Do you prefer indoor or outdoor activities?', 'What is something you are really good at?'] },
+    'Childhood': { vocab: ['grow up', 'look back on', 'mischievous', 'a vivid memory', 'when I was a kid'], questions: [
+      'What is your favourite childhood memory?', 'What did you want to be when you were a child?', 'What games did you play as a kid?',
+      'Who was your best friend at primary school?', 'Do you think children today have a better life than you did?'] },
+    'Money & shopping': { vocab: ['on a budget', 'splash out', 'a bargain', 'impulse buy', 'save up for'], questions: [
+      'What was the last thing you bought?', 'Are you a saver or a spender?', 'Do you prefer shopping online or in stores?',
+      'What would you do if you won a million euros?', 'What is something that is worth spending more money on?'] },
+    'Health & lifestyle': { vocab: ['stay in shape', 'work out', 'a balanced diet', 'burn out', 'get enough sleep'], questions: [
+      'What do you do to stay healthy?', 'Are you a morning person or a night owl?', 'How many hours do you usually sleep?',
+      'What is a bad habit you would like to break?', 'How do you deal with stress?'] },
+    'Environment': { vocab: ['go green', 'cut down on', 'single-use plastic', 'carbon footprint', 'recycle'], questions: [
+      'What do you do to help the environment?', 'Should plastic bags be banned everywhere?', 'Would you give up flying to protect the planet?',
+      'Is it the job of governments or individuals to stop climate change?', 'What is the biggest environmental problem in your country?'] },
+    'Work & future': { vocab: ['a dream job', 'work-life balance', 'climb the ladder', 'be my own boss', 'in the long run'], questions: [
+      'What would your dream job be?', 'Would you rather work from home or in an office?', 'Where do you see yourself in five years?',
+      'Is money the most important thing in a job?', 'What skill do you want to learn this year?'] },
+    'Films, music & books': { vocab: ['a page-turner', 'catchy', 'plot twist', 'it grew on me', 'highly recommend'], questions: [
+      'What is the last film you watched?', 'What kind of music do you listen to when you study?', 'Is there a book that changed the way you think?',
+      'Do you prefer watching films at home or at the cinema?', 'Which song always puts you in a good mood?'] },
+    'Hypothetical': { vocab: ['I\'d probably...', 'if I had the chance', 'without a doubt', 'it depends', 'the first thing I\'d do'], questions: [
+      'If you could have any superpower, what would it be?', 'If you could meet anyone, dead or alive, who would it be?', 'If you could live in any period of history, which would you choose?',
+      'If you had one extra hour every day, how would you use it?', 'If you could change one thing about the world, what would it be?'] },
+  },
+  flashStarters: ["Honestly, I'd say...", 'That\'s a tough one, but...', 'I\'ve never really thought about it, but...', 'It depends, but generally...', 'For me, it\'s definitely...'],
   stories: [
     { id: 'home', title: 'Quê nhà', prompt: 'Where are you from? What is it like? What do you miss?' },
     { id: 'study', title: 'Ngành học', prompt: 'What do you study? Why? What is your research about?' },
