@@ -13,7 +13,6 @@
     <button data-tab="today" class="active">Hôm nay</button>
     <button data-tab="dictation">Nghe chép</button>
     <button data-tab="shadow">Shadowing</button>
-    <button data-tab="ai">Hội thoại AI</button>
     <button data-tab="reflex">Phản xạ nói</button>
     <button data-tab="free">Nói tự do</button>
     <button data-tab="phrases">Cụm từ</button>
@@ -176,59 +175,6 @@
     </div>
   </section>
 
-  <!-- ============ HỘI THOẠI AI ============ -->
-  <section class="tab" id="tab-ai">
-    <div class="card" id="ai-setup">
-      <h2>Hội thoại với AI</h2>
-      <p class="hint">Nói chuyện bằng giọng với Claude như với một người bạn ở club, bạn tandem hay giám khảo IELTS. Không áp lực, nói sai cũng không sao. Cuối buổi bạn nhận được nhận xét bằng tiếng Việt.</p>
-      <div class="row" id="ai-key-row">
-        <div style="flex:1;min-width:260px">
-          <label class="small">Anthropic API key (lấy ở console.anthropic.com, tính phí theo lượt dùng)</label>
-          <input type="password" id="ai-key" placeholder="sk-ant-..." autocomplete="off">
-        </div>
-        <button class="btn secondary" id="ai-key-save" style="align-self:flex-end">Lưu key</button>
-      </div>
-      <p class="hint" id="ai-key-note" style="margin-top:6px">Key chỉ được lưu trong trình duyệt này và gửi thẳng tới Anthropic. Đừng dùng app trên máy người khác.</p>
-      <div class="row" style="margin-top:6px">
-        <div style="flex:1;min-width:200px">
-          <label class="small">Tình huống</label>
-          <select id="ai-scenario"></select>
-        </div>
-        <div style="flex:1;min-width:200px">
-          <label class="small">Sửa lỗi</label>
-          <select id="ai-correct">
-            <option value="end">Chỉ nhận xét cuối buổi (trôi chảy hơn)</option>
-            <option value="light">Gợi ý nhẹ ngay sau câu sai</option>
-          </select>
-        </div>
-        <div style="flex:1;min-width:200px">
-          <label class="small">Chế độ</label>
-          <label class="row" style="gap:6px"><input type="checkbox" id="ai-handsfree" checked style="width:auto"> Rảnh tay: tự bật micro, tự gửi khi bạn ngừng nói ~2 giây</label>
-        </div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <button class="btn" id="ai-begin">▶ Bắt đầu hội thoại</button>
-        <button class="btn danger" id="ai-end" disabled>■ Kết thúc &amp; nhận xét</button>
-        <span id="ai-status" class="hint" style="margin:0"></span>
-      </div>
-    </div>
-    <div class="card">
-      <div id="ai-chat" class="chat"></div>
-      <div class="row" style="margin-top:12px"><div class="meter"><div id="ai-meter"></div></div><span id="ai-live" class="hint" style="margin:0"></span></div>
-      <div class="row" style="margin-top:10px">
-        <button class="btn" id="ai-mic" disabled>🎙 Nói</button>
-        <input type="text" id="ai-text" placeholder="...hoặc gõ câu trả lời" style="flex:1" disabled>
-        <button class="btn secondary" id="ai-send" disabled>Gửi</button>
-        <button class="btn secondary" id="ai-hint" disabled title="Gợi ý vài ý để trả lời">💭 Bí ý</button>
-      </div>
-    </div>
-    <div class="card" id="ai-feedback-card" hidden>
-      <h2>Nhận xét buổi nói</h2>
-      <div class="stat-row" id="ai-stats" style="margin-bottom:12px"></div>
-      <div id="ai-feedback" class="feedback"></div>
-    </div>
-  </section>
-
   <!-- ============ PHẢN XẠ ============ -->
   <section class="tab" id="tab-reflex">
     <div class="card">
@@ -366,6 +312,5 @@
 <div class="toast" id="toast"></div>
 <script src="data.js"></script>
 <script src="app.js"></script>
-<script type="module" src="ai.js"></script>
 </body>
 </html>

@@ -23,6 +23,7 @@ const defaults = () => ({
 let S;
 try { S = Object.assign(defaults(), JSON.parse(localStorage.getItem(STORE_KEY) || '{}')); }
 catch { S = defaults(); }
+localStorage.removeItem('speakup_key'); // xoá API key cũ từ bản có Hội thoại AI
 const save = () => localStorage.setItem(STORE_KEY, JSON.stringify(S));
 function today() {
   const k = todayStr();
@@ -551,7 +552,6 @@ const FREE = {
     desc: 'Tóm tắt nội dung chính của bài giảng hôm nay trong 2 phút. Luyện cả trí nhớ lẫn diễn đạt học thuật.' },
   summary: { name: 'Tóm tắt podcast', rounds: [120], minDone: 60, needTopic: true,
     desc: 'Nghe 1–2 phút podcast rồi dừng lại và tóm tắt to. Tăng dần lên 5, rồi 10 phút nghe mỗi lần tóm tắt.' },
-  ai: { name: 'Hội thoại AI', rounds: [0], minDone: 0, needTopic: false, desc: '' },
   '432': { name: '4-3-2', rounds: [240, 180, 120], minDone: 0, needTopic: true,
     desc: 'Kể CÙNG một câu chuyện 3 lần: 4 phút, 3 phút, rồi 2 phút. Lần sau phải nói nhanh và gọn hơn. Kỹ thuật này đã được nghiên cứu chứng minh giúp nói trôi chảy hơn.' },
 };
